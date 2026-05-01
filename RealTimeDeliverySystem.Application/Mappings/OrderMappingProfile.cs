@@ -11,8 +11,18 @@ namespace RealTimeDeliverySystem.Application.Mappings
             CreateMap<CreateOrderDto, Order>();
 
             CreateMap<Order, OrderDto>()
-                .ForMember(dest => dest.Status,
-                    opt => opt.MapFrom(src => src.Status));
+                .ForMember(d => d.Status,
+                    o => o.MapFrom(s => s.Status.ToString()))
+                .ForMember(d => d.PaymentMethod,
+                    o => o.MapFrom(s => s.PaymentMethod.ToString()))
+                .ForMember(d => d.TotalAmount,
+                    o => o.MapFrom(s => s.TotalAmount))
+                .ForMember(d => d.CustomerName,
+                    o => o.MapFrom(s => s.CustomerName ??  s.Customer.Name))
+                .ForMember(d => d.CustomerEmail,
+                    o => o.MapFrom(s => s.CustomerEmail ?? s.Customer.Email))
+                .ForMember(d => d.CustomerPhone,
+                    o => o.MapFrom(s => s.CustomerPhone ?? s.Customer.PhoneNumber));
         }
     }
 }

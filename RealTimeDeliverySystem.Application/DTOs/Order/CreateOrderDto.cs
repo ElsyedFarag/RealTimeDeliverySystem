@@ -1,17 +1,31 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using RealTimeDeliverySystem.Domain.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace RealTimeDeliverySystem.Application.DTOs.Order
 {
     public class CreateOrderDto
     {
         [Required]
-        [MaxLength(100)]
         public string CustomerName { get; set; } = null!;
 
         [Required]
-        [MaxLength(250)]
+        [EmailAddress]
+        public string CustomerEmail { get; set; } = null!;
+
+        [Required]
+        public string CustomerPhone { get; set; } = null!;
+
+        [Required]
         public string DeliveryAddress { get; set; } = null!;
 
-        public DateTime OrderTime { get; set; } = DateTime.UtcNow;
+        public string? City { get; set; }
+        public string? Notes { get; set; }
+
+        [Range(0, double.MaxValue)]
+        public decimal SubTotal { get; set; }
+        public decimal DeliveryFee { get; set; }
+        public decimal Discount { get; set; }
+
+        public PaymentMethod PaymentMethod { get; set; }
     }
 }

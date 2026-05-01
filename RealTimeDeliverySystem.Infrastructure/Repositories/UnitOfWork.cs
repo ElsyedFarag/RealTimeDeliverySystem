@@ -26,7 +26,7 @@ namespace RealTimeDeliverySystem.Infrastructure.Repositories
             var repositoryType = typeof(Repository<>).MakeGenericType(typeof(T));
             var repositoryInstance = Activator.CreateInstance(repositoryType, _context);
 
-            _repositories.Add(type, repositoryInstance);
+            _repositories.Add(type, repositoryInstance!);
 
             return (IRepository<T>)repositoryInstance!;
         }
