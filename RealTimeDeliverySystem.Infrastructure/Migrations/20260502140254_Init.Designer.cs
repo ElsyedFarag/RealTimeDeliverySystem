@@ -12,7 +12,7 @@ using RealTimeDeliverySystem.Infrastructure.Data;
 namespace RealTimeDeliverySystem.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260501162855_Init")]
+    [Migration("20260502140254_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -191,6 +191,12 @@ namespace RealTimeDeliverySystem.Infrastructure.Migrations
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
 
+                    b.Property<DateTime?>("LastLocationUpdate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("LastSeen")
+                        .HasColumnType("datetime2");
+
                     b.Property<double?>("Latitude")
                         .HasPrecision(10, 7)
                         .HasColumnType("float(10)");
@@ -239,23 +245,24 @@ namespace RealTimeDeliverySystem.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Email")
-                        .IsUnique()
-                        .HasFilter("[Email] IS NOT NULL");
-
-                    b.HasIndex("IsOnline");
+                    b.HasIndex("IsOnline")
+                        .HasDatabaseName("IX_Users_IsOnline");
 
                     b.HasIndex("NormalizedEmail")
-                        .HasDatabaseName("EmailIndex");
+                        .IsUnique()
+                        .HasDatabaseName("IX_Users_NormalizedEmail")
+                        .HasFilter("[NormalizedEmail] IS NOT NULL");
 
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.HasIndex("PhoneNumber");
+                    b.HasIndex("PhoneNumber")
+                        .HasDatabaseName("IX_Users_PhoneNumber");
 
-                    b.HasIndex("Latitude", "Longitude");
+                    b.HasIndex("Latitude", "Longitude")
+                        .HasDatabaseName("IX_Users_Location");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });

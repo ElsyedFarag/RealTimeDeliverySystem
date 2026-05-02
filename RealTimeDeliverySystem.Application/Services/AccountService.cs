@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using RealTimeDeliverySystem.Application.DTOs.Account;
+using RealTimeDeliverySystem.Application.Helpers.Constants;
 using RealTimeDeliverySystem.Application.Interfaces;
 using RealTimeDeliverySystem.Domain.Entities;
 
@@ -9,24 +10,28 @@ namespace RealTimeDeliverySystem.Application.Services
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IJwtService _jwtService;
         public AccountService(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            IJwtService jwtService)
+            IJwtService jwtService,
+            RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _jwtService = jwtService;
+            _roleManager = roleManager;
         }
 
         public async Task<string> RegisterAsync(RegisterDto dto)
         {
             if (string.IsNullOrWhiteSpace(dto.Email) ||
                 string.IsNullOrWhiteSpace(dto.Password) ||
-                string.IsNullOrWhiteSpace(dto.Name) || string.IsNullOrEmpty(dto.PhoneNumber))
+                string.IsNullOrWhiteSpace(dto.Name) ||
+                string.IsNullOrEmpty(dto.PhoneNumber))
             {
-                throw new ArgumentException("Email, Password and Name and PhoneNumber are required.");
+                throw new ArgumentException("Email, Password, Name and PhoneNumber are required.");
             }
 
             var userExists = await _userManager.FindByEmailAsync(dto.Email);
@@ -48,6 +53,14 @@ namespace RealTimeDeliverySystem.Application.Services
                 var errors = string.Join(", ", result.Errors.Select(e => e.Description));
                 throw new Exception(errors);
             }
+
+            if (!await _roleManager.RoleExistsAsync(Roles.CustomerRole))
+            {
+                await _roleManager.CreateAsync(new IdentityRole(Roles.CustomerRole));
+            }
+
+            await _userManager.AddToRoleAsync(user, Roles.CustomerRole);
+
             return "User registered successfully";
         }
 

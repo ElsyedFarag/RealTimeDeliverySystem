@@ -10,5 +10,7 @@ namespace RealTimeDeliverySystem.Application.Interfaces
         Task<IEnumerable<OrderDto>> GetAllOrdersAsync();
         Task<bool> UpdateOrderStatusAsync(int orderId, string status);
         Task<bool> DeleteOrderAsync(int id);
+
+        Task<bool> AssignOrderToDriverAsync(int orderId, string driverId);
     }
 }

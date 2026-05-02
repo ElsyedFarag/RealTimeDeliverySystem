@@ -33,9 +33,11 @@ namespace RealTimeDeliverySystem.Infrastructure.Migrations
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Address = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
                     IsOnline = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
                     Latitude = table.Column<double>(type: "float(10)", precision: 10, scale: 7, nullable: true),
                     Longitude = table.Column<double>(type: "float(10)", precision: 10, scale: 7, nullable: true),
+                    LastLocationUpdate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    LastSeen = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -232,29 +234,24 @@ namespace RealTimeDeliverySystem.Infrastructure.Migrations
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
-                name: "EmailIndex",
-                table: "AspNetUsers",
-                column: "NormalizedEmail");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AspNetUsers_Email",
-                table: "AspNetUsers",
-                column: "Email",
-                unique: true,
-                filter: "[Email] IS NOT NULL");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AspNetUsers_IsOnline",
+                name: "IX_Users_IsOnline",
                 table: "AspNetUsers",
                 column: "IsOnline");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AspNetUsers_Latitude_Longitude",
+                name: "IX_Users_Location",
                 table: "AspNetUsers",
                 columns: new[] { "Latitude", "Longitude" });
 
             migrationBuilder.CreateIndex(
-                name: "IX_AspNetUsers_PhoneNumber",
+                name: "IX_Users_NormalizedEmail",
+                table: "AspNetUsers",
+                column: "NormalizedEmail",
+                unique: true,
+                filter: "[NormalizedEmail] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_PhoneNumber",
                 table: "AspNetUsers",
                 column: "PhoneNumber");
 

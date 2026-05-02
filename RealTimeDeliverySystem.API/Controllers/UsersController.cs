@@ -57,19 +57,5 @@ namespace RealTimeDeliverySystem.API.Controllers
 
             return NoContent();
         }
-
-        [HttpGet("me")]
-        [Authorize]
-        public async Task<IActionResult> GetCurrentUser()
-        {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            if (userId == null)
-                return Unauthorized();
-
-            var user = await _userService.GetCurrentUserAsync(userId);
-
-            return Ok(user);
-        }
     }
 }

@@ -6,7 +6,7 @@ using System.Security.Claims;
 
 namespace RealTimeDeliverySystem.API.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = $"{Roles.AdminRole},{Roles.CustomerRole},{Roles.DriverRole}")]
     [Route("api/[controller]")]
     [ApiController]
     public class OrdersController : ControllerBase
@@ -39,6 +39,7 @@ namespace RealTimeDeliverySystem.API.Controllers
         }
 
         // POST: api/orders
+        [Authorize(Roles = $"{Roles.AdminRole},{Roles.CustomerRole}")]
         [HttpPost]
         public async Task<ActionResult<OrderDto>> Create([FromBody] CreateOrderDto dto)
         {
@@ -57,6 +58,46 @@ namespace RealTimeDeliverySystem.API.Controllers
                 new { id = createdOrder.Id },
                 createdOrder
             );
+        }
+
+        [Authorize(Roles = $"{Roles.AdminRole},{Roles.DriverRole}")]
+        [HttpPut("{id:int}/status")]
+        public async Task<IActionResult> UpdateStatus(int id, [FromBody] UpdateOrderStatusDto dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _orderService.UpdateOrderStatusAsync(id, dto.Status);
+
+            if (!result)
+                return NotFound($"Order with ID {id} not found or invalid status.");
+
+            return Ok(new
+            {
+                Message = "Order status updated successfully",
+                OrderId = id,
+                NewStatus = dto.Status
+            });
+        }
+
+        [HttpPut("{id:int}/assign")]
+        [Authorize(Roles = Roles.AdminRole)]
+        public async Task<IActionResult> AssignOrder(int id, [FromBody] AssignOrderDto dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _orderService.AssignOrderToDriverAsync(id, dto.DriverId);
+
+            if (!result)
+                return NotFound($"Order {id} not found or invalid driver.");
+
+            return Ok(new
+            {
+                Message = "Order assigned successfully",
+                OrderId = id,
+                DriverId = dto.DriverId
+            });
         }
     }
 }

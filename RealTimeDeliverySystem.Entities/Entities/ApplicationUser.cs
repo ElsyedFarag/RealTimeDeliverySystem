@@ -6,11 +6,17 @@ namespace RealTimeDeliverySystem.Domain.Entities
     {
         public string Name { get; set; } = null!;
         public string? Address { get; set; }
+
         public bool IsOnline { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         public double? Latitude { get; set; }
         public double? Longitude { get; set; }
+
+        public DateTime? LastLocationUpdate { get; set; }
+        public DateTime? LastSeen { get; set; }
+
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
         public ICollection<Order> Orders { get; set; } = new List<Order>();
     }
 }

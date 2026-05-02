@@ -9,6 +9,7 @@ namespace RealTimeDeliverySystem.Application.Mappings
         public UserMappingProfile()
         { 
            CreateMap<ApplicationUser, UserDto>();
+           CreateMap<UserDto, ApplicationUser>();
         }
     }
 }
